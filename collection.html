@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Colección</title>
+  <link rel="stylesheet" href="assets/style.css"/>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="brand"><a href="index.html">VibraSound</a></div>
+      <nav>
+        <a href="index.html">Portafolio</a>
+        <a href="artista.html">Artista</a>
+      </nav>
+    </header>
+
+    <a class="back" href="index.html">← Volver a colecciones</a>
+    <h2 id="cTitle"></h2>
+    <p id="cDesc" class="subtitle"></p>
+    <div id="cMeta" class="subtitle"></div>
+
+    <div id="gallery" class="gallery"></div>
+
+    <footer>© <span id="year"></span> - Todos los derechos reservados.</footer>
+  </div>
+
+  <!-- Lightbox -->
+  <div id="lightbox" class="lightbox" role="dialog" aria-modal="true" aria-label="Vista de imagen">
+    <div class="lb-ui">
+      <button id="prev" class="lb-btn" aria-label="Anterior">‹</button>
+      <button id="next" class="lb-btn" aria-label="Siguiente">›</button>
+    </div>
+    <button id="close" class="lb-btn lb-close" aria-label="Cerrar">✕</button>
+    <img id="lbImg" alt="">
+  </div>
+
+  <script src="assets/data.js"></script>
+  <script src="assets/gallery.js"></script>
+  <script>
+    // Read the collection id from the URL
+    const params = new URLSearchParams(location.search);
+    const id = params.get('id');
+
+    // Pull data (now includes logo)
+    const { collections, artista, logo } = window.PORTFOLIO;
+
+    // Footer year
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // Brand header: logo + name (fallback to name only if no logo)
+    const brandLink = document.querySelector('.brand a');
+    brandLink.textContent = ""; // clear
+    if (logo) {
+      const img = document.createElement('img');
+      img.src = logo;
+      img.alt = artista + " logo";
+      img.style.height = "28px";
+      img.style.verticalAlign = "middle";
+      img.style.marginRight = "8px";
+      brandLink.appendChild(img);
+    }
+    const nameSpan = document.createElement('span');
+    nameSpan.textContent = artista;
+    brandLink.appendChild(nameSpan);
+
+    // Find the collection
+    const col = collections.find(c => c.id === id);
+    if (!col) { location.href = "index.html"; }
+
+    // Page meta + headers
+    document.title = `${artista} — ${col.title}`;
+    document.getElementById('cTitle').textContent = col.title;
+    document.getElementById('cDesc').textContent = col.desc;
+    document.getElementById('cMeta').textContent = `${col.images.length} imágenes • ${col.tag}`;
+
+    // Render gallery
+    const g = document.getElementById('gallery');
+    col.images.forEach((src, i) => {
+      const fig = document.createElement('figure');
+      fig.className = 'shot';
+      fig.innerHTML = `
+        <img src="${src}" alt="${col.title} ${i + 1}" loading="lazy" decoding="async">
+        <figcaption>${col.title} #${i + 1}</figcaption>
+      `;
+      fig.querySelector('img').addEventListener('click', () => Lightbox.open(col.images, i));
+      g.appendChild(fig);
+    });
+  </script>
+
+</body>
+</html>

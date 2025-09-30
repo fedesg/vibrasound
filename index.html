@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>VibraSound</title>
+  <link rel="stylesheet" href="assets/style.css"/>
+  <meta name="description" content="Portafolio de fotografía y diseño"/>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <!-- <div class="brand"><a href="index.html">VibraSound</a></div> -->
+      <div class="brand">
+        <a href="index.html" id="brandLink">
+          <img id="brandLogo" alt="logo" style="height:28px; vertical-align:middle; margin-right:8px; display:none;">
+          <span id="brandName"></span>
+        </a>
+      </div>
+      <nav>
+        <a href="index.html">Portafolio</a>
+        <a href="artista.html">Artista</a>
+      </nav>
+    </header>
+
+    <section class="hero">
+      <div class="title">Soy Fabián Soria</div>
+      <div class="title2">FOTOGRÁFO - ARTISTA  <br>Combino el la iconografía rupestres con lo audiovisual a de fin de comunicar ideas a través de imágenes, collage, videos
+(diseño). Para ello, uso diferentes sofwareds a fin de conseguir resultados pregnantes.</div>
+    </section>
+
+    <section id="home" class="grid" aria-live="polite"></section>
+
+    <footer>© <span id="year"></span> - Todos los derechos reservados.</footer>
+  </div>
+
+  <!-- Lightbox -->
+  <div id="lightbox" class="lightbox" role="dialog" aria-modal="true" aria-label="Vista de imagen">
+    <div class="lb-ui">
+      <button id="prev" class="lb-btn" aria-label="Anterior">‹</button>
+      <button id="next" class="lb-btn" aria-label="Siguiente">›</button>
+    </div>
+    <button id="close" class="lb-btn lb-close" aria-label="Cerrar">✕</button>
+    <img id="lbImg" alt="">
+  </div>
+
+  <script src="assets/data.js"></script>
+  <script src="assets/gallery.js"></script>
+  <script>
+    const { collections, artista, logo } = window.PORTFOLIO;
+
+    // Update page title
+    document.title = artista + " — Portafolio";
+
+    // Update brand area
+    const brand = document.querySelector('.brand a');
+    brand.textContent = ""; // clear text before inserting logo+name
+
+    if (logo) {
+      const logoImg = document.createElement("img");
+      logoImg.src = logo;
+      logoImg.alt = artista + " logo";
+      logoImg.style.height = "28px";
+      logoImg.style.verticalAlign = "middle";
+      logoImg.style.marginRight = "8px";
+      brand.appendChild(logoImg);
+    }
+
+    const brandName = document.createElement("span");
+    brandName.textContent = artista;
+    brand.appendChild(brandName);
+
+    // Footer year
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // Render collection cards
+    const grid = document.getElementById('home');
+    collections.forEach(col => {
+      const card = document.createElement('article');
+      card.className = 'card';
+      card.innerHTML = `
+        <a href="collection.html?id=${encodeURIComponent(col.id)}" style="text-decoration:none;color:inherit">
+          <img src="${col.cover}" alt="${col.title} cover" loading="lazy">
+          <div class="overlay">
+            <span class="tag">${col.tag}</span>
+            <h3>${col.title}</h3>
+            <p>${col.desc}</p>
+          </div>
+        </a>`;
+      grid.appendChild(card);
+    });
+  </script>
+</body>
+</html>
